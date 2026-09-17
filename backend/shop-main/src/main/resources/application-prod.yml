@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://prod-db-host:3306/shop_db?useSSL=true&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expire: 604800000
+
+file:
+  upload:
+    dir: /data/prod/uploads/
+
+logging:
+  level:
+    com.hzs: WARN
+  file:
+    name: /var/log/shop/backend.log

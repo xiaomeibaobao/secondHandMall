@@ -1,0 +1,17 @@
+server:
+  port:8080
+spring:
+  profiles:
+    active:dev
+  application:
+    name: shop
+
+mybatis:
+  mapper-location: classpath:mapper/*.xml
+  type-aliases-package: com.hzs.**.model.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+#logging:
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
