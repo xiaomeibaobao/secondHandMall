@@ -2,15 +2,16 @@ server:
   port:8080
 spring:
   profiles:
-    active:dev
+    active: dev
   application:
     name: shop
 
 mybatis:
-  mapper-location: classpath:mapper/*.xml
+  mapper-location: classpath:mapper/**/*.xml
   type-aliases-package: com.hzs.**.model.entity
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #logging:
 #  pattern:

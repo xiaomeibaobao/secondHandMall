@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * @author 220419
@@ -31,6 +32,10 @@ public class GlobalExceptionHandler {
                 .orElse("参数错误");
         log.warn("参数校验错误：{}", message);
         return Result.error(Code.PARAM_ERROR.getCode(), message);
+    }
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Result handleMaxUploadSize(MaxUploadSizeExceededException e) {
+        return Result.error("文件大小超出限制，单个文件最大 10MB，总请求最大 20MB");
     }
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception e) {

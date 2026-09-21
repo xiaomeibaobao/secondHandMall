@@ -39,6 +39,31 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.hzs</groupId>
+                <artifactId>shop-user-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hzs</groupId>
+                <artifactId>shop-user-interface</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hzs</groupId>
+                <artifactId>shop-user-dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hzs</groupId>
+                <artifactId>shop-user-controller</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hzs</groupId>
+                <artifactId>shop-user-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
