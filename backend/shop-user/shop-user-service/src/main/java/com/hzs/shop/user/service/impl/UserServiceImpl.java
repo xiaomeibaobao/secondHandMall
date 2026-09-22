@@ -3,6 +3,7 @@ package com.hzs.shop.user.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hzs.shop.common.exception.BusinessException;
+import com.hzs.shop.common.result.Code;
 import com.hzs.shop.common.utils.JwtUtil;
 import com.hzs.shop.common.utils.PasswordUtil;
 import com.hzs.shop.user.model.dto.LoginRequest;
@@ -12,6 +13,7 @@ import com.hzs.shop.user.model.vo.UserVO;
 import com.hzs.shop.user.service.UserService;
 import com.hzs.user.dao.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,11 +73,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public UserVO getUserById(Long id) {
-        return null;
+        User user = userMapper.selectById(id);
+        if(user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+        return getUserVO(user);
     }
 
     @Override
     public UserVO getCurrentUser(Long userId) {
-        return null;
+        if(userId == null) {
+            throw new BusinessException(Code.UNAUTHORIZED);
+        }
+        return getUserById(userId);
+    }
+
+    private UserVO getUserVO(User user) {
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        return userVO;
     }
 }

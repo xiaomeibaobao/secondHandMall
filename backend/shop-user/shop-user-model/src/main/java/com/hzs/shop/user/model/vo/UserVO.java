@@ -25,6 +25,4 @@ public class UserVO {
     private String avatar;
     @Schema(description = "角色,USER(普通用户)/ADMIN（管理员）")
     private String role;
-    @Schema(description = "创建时间")
-    private LocalDateTime createTime;
 }

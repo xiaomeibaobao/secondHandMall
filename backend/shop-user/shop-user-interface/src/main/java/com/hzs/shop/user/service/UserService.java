@@ -1,7 +1,9 @@
 package com.hzs.shop.user.service;
 
 import com.hzs.shop.user.model.dto.LoginRequest;
+import com.hzs.shop.user.model.dto.PasswordUPdateDTO;
 import com.hzs.shop.user.model.dto.RegisterRequest;
+import com.hzs.shop.user.model.dto.UserUpdateDTO;
 import com.hzs.shop.user.model.vo.UserVO;
 
 /**
@@ -24,4 +26,18 @@ public interface UserService {
      * 获取当前登录用户信息
      */
     UserVO getCurrentUser(Long userId);
+
+    /**
+     * 修改用户信息
+     * @param userId
+     * @param userUpdateDTO
+     */
+    void updateUser(Long userId, UserUpdateDTO userUpdateDTO);
+
+    /**
+     * 修改密码
+     * @param userId
+     * @param passwordUpdateDTO
+     */
+    void updatePassword(Long userId, PasswordUPdateDTO passwordUpdateDTO);
 }
