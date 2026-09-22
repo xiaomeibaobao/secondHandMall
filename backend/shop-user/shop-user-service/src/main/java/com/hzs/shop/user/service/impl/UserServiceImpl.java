@@ -7,7 +7,9 @@ import com.hzs.shop.common.result.Code;
 import com.hzs.shop.common.utils.JwtUtil;
 import com.hzs.shop.common.utils.PasswordUtil;
 import com.hzs.shop.user.model.dto.LoginRequest;
+import com.hzs.shop.user.model.dto.PasswordUPdateDTO;
 import com.hzs.shop.user.model.dto.RegisterRequest;
+import com.hzs.shop.user.model.dto.UserUpdateDTO;
 import com.hzs.shop.user.model.entity.User;
 import com.hzs.shop.user.model.vo.UserVO;
 import com.hzs.shop.user.service.UserService;
@@ -86,6 +88,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(Code.UNAUTHORIZED);
         }
         return getUserById(userId);
+    }
+
+    @Override
+    public void updateUser(Long userId, UserUpdateDTO userUpdateDTO) {
+
+    }
+
+    @Override
+    public void updatePassword(Long userId, PasswordUPdateDTO passwordUpdateDTO) {
+
     }
 
     private UserVO getUserVO(User user) {
