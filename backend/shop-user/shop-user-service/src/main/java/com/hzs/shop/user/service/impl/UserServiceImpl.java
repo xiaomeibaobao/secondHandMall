@@ -7,7 +7,7 @@ import com.hzs.shop.common.result.Code;
 import com.hzs.shop.common.utils.JwtUtil;
 import com.hzs.shop.common.utils.PasswordUtil;
 import com.hzs.shop.user.model.dto.LoginRequest;
-import com.hzs.shop.user.model.dto.PasswordUPdateDTO;
+import com.hzs.shop.user.model.dto.PasswordUpdateDTO;
 import com.hzs.shop.user.model.dto.RegisterRequest;
 import com.hzs.shop.user.model.dto.UserUpdateDTO;
 import com.hzs.shop.user.model.entity.User;
@@ -91,13 +91,47 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    @Transactional
     public void updateUser(Long userId, UserUpdateDTO userUpdateDTO) {
-
+        User user = userMapper.selectById(userId);
+        if(user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+        if(userUpdateDTO.getNickname() != null) {
+            user.setNickname(userUpdateDTO.getNickname());
+        }
+        if(userUpdateDTO.getEmail() != null) {
+            user.setEmail(userUpdateDTO.getEmail());
+        }
+        userMapper.updateById(user);
+        log.info("用户信息更新成功：{}", userId);
     }
 
     @Override
-    public void updatePassword(Long userId, PasswordUPdateDTO passwordUpdateDTO) {
+    @Transactional
+    public void updatePassword(Long userId, PasswordUpdateDTO passwordUpdateDTO) {
+        User user = userMapper.selectById(userId);
+        if(user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+        if(!PasswordUtil.matches(passwordUpdateDTO.getOldPassword(), user.getPassword())) {
+            throw new BusinessException(400, "旧密码错误");
+        }
+        user.setPassword(PasswordUtil.encode(passwordUpdateDTO.getNewPassword()));
+        userMapper.updateById(user);
+        log.info("密码修改成功：{}", userId);
+    }
 
+    @Override
+    @Transactional
+    public void updateAvatar(Long userId, String avatarUrl) {
+        User user = baseMapper.selectById(userId);
+        if(user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+        user.setAvatar(avatarUrl);
+        userMapper.updateById(user);
+        log.info("头像更新成功：{}", userId);
     }
 
     private UserVO getUserVO(User user) {

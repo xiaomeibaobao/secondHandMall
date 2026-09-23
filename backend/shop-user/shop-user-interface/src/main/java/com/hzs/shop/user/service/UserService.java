@@ -1,7 +1,7 @@
 package com.hzs.shop.user.service;
 
 import com.hzs.shop.user.model.dto.LoginRequest;
-import com.hzs.shop.user.model.dto.PasswordUPdateDTO;
+import com.hzs.shop.user.model.dto.PasswordUpdateDTO;
 import com.hzs.shop.user.model.dto.RegisterRequest;
 import com.hzs.shop.user.model.dto.UserUpdateDTO;
 import com.hzs.shop.user.model.vo.UserVO;
@@ -39,5 +39,12 @@ public interface UserService {
      * @param userId
      * @param passwordUpdateDTO
      */
-    void updatePassword(Long userId, PasswordUPdateDTO passwordUpdateDTO);
+    void updatePassword(Long userId, PasswordUpdateDTO passwordUpdateDTO);
+
+    /**
+     * 更新头像
+     * @param userId
+     * @param avatarUrl
+     */
+    void updateAvatar(Long userId, String avatarUrl);
 }

@@ -1,6 +1,8 @@
 server:
   port: 8080
-
+  forward-headers-strategy: framework  # 让 Spring 自动处理 X-Forwarded-* 头
+app:
+  domain: http://localhost:8080
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -31,6 +33,7 @@ jwt:
 file:
   upload:
     dir: ./uploads/
+    url-prefix: /api/file/view/
 
 logging:
   level:

@@ -1,8 +1,12 @@
 package com.hzs.shop.user.controller;
 
 import com.hzs.shop.common.result.Result;
+import com.hzs.shop.common.service.FileService;
+import com.hzs.shop.common.vo.FileUploadVO;
 import com.hzs.shop.user.model.dto.LoginRequest;
+import com.hzs.shop.user.model.dto.PasswordUpdateDTO;
 import com.hzs.shop.user.model.dto.RegisterRequest;
+import com.hzs.shop.user.model.dto.UserUpdateDTO;
 import com.hzs.shop.user.model.vo.UserVO;
 import com.hzs.shop.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author 220419
@@ -25,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private FileService fileService;
     @Operation(summary = "用户注册")
     @PostMapping("/register")
     public Result<String> register(@Valid @RequestBody RegisterRequest registerRequest) {
@@ -43,5 +50,26 @@ public class UserController {
         Long userId = (Long) request.getAttribute("userId");
         return Result.success(userService.getCurrentUser(userId));
     }
-
+    @Operation(summary = "修改用户信息")
+    @PostMapping("/update")
+    public Result<Void> updateUser(@Valid @RequestBody UserUpdateDTO dto, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        userService.updateUser(userId, dto);
+        return Result.success();
+    }
+    @Operation(summary = "修改密码")
+    @PostMapping("/updatepassword")
+    public Result<Void> updatePassword(@Valid @RequestBody PasswordUpdateDTO dto, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        userService.updatePassword(userId, dto);
+        return Result.success();
+    }
+    @Operation(summary = "上传头像")
+    @PostMapping("/uploadavatar")
+    public Result<String> uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        FileUploadVO fileUploadVO = fileService.uploadImage(file, request);
+        userService.updateAvatar(userId, fileUploadVO.getUrl());
+        return Result.success(fileUploadVO.getUrl());
+    }
 }
