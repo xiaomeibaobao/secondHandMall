@@ -1,24 +1,25 @@
 package com.hzs.shop.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hzs.shop.common.exception.BusinessException;
 import com.hzs.shop.common.result.Code;
+import com.hzs.shop.common.result.PageResult;
 import com.hzs.shop.common.utils.JwtUtil;
 import com.hzs.shop.common.utils.PasswordUtil;
-import com.hzs.shop.user.model.dto.LoginRequest;
-import com.hzs.shop.user.model.dto.PasswordUpdateDTO;
-import com.hzs.shop.user.model.dto.RegisterRequest;
-import com.hzs.shop.user.model.dto.UserUpdateDTO;
+import com.hzs.shop.user.model.dto.*;
 import com.hzs.shop.user.model.entity.User;
 import com.hzs.shop.user.model.vo.UserVO;
 import com.hzs.shop.user.service.UserService;
 import com.hzs.user.dao.mapper.UserMapper;
+import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 /**
  * @author 220419
@@ -53,6 +54,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         userMapper.insert(user);
         log.info("用户注册成功：{}", request.getUsername());
+    }
+
+    @Override
+    @Transactional
+    public void adminRegister(RegisterRequest request) {
+        Long count = baseMapper.selectCount(new LambdaQueryWrapper<User>()
+                .eq(User::getUsername, request.getUsername()));
+        if (count > 0) {
+            throw new BusinessException(400, "用户名已存在");
+        }
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(PasswordUtil.encode(request.getPassword()));
+        user.setNickname(request.getNickname());
+        user.setEmail(request.getEmial());
+        user.setRole("ADMIN");
+        user.setStatus(1);
+        baseMapper.insert(user);
+        log.info("管理员注册成功：{}", request.getUsername());
     }
 
     @Override
@@ -134,7 +154,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         log.info("头像更新成功：{}", userId);
     }
 
+    @Override
+    public PageResult<UserVO> getUserList(UserQueryDTO dto) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        if(StringUtils.hasText(dto.getUsername())) {
+            wrapper.like(User::getUsername, dto.getUsername());
+        }
+        if(StringUtils.hasText(dto.getRole())) {
+            wrapper.eq(User::getRole, dto.getRole());
+        }
+        if(dto.getStatus() != null) {
+            wrapper.eq(User::getStatus, dto.getStatus());
+        }
+        wrapper.orderByDesc(User::getCreateTime);
+        Page<User> page = page(new Page<>(dto.getPageNum(), dto.getPageSize()), wrapper);
+        return PageResult.from(page, this::convertToVo);
+    }
+
+    @Override
+    public void updateUserStatus(Long userId, Integer status) {
+
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+
+    }
+
+    @Override
+    public void updateUserRole(Long userId, String role) {
+
+    }
+
     private UserVO getUserVO(User user) {
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user, userVO);
+        return userVO;
+    }
+    private UserVO convertToVo(User user) {
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user, userVO);
         return userVO;

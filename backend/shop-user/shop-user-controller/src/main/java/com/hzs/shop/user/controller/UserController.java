@@ -1,12 +1,11 @@
 package com.hzs.shop.user.controller;
 
+import com.hzs.shop.common.annotation.AdminOnly;
+import com.hzs.shop.common.result.PageResult;
 import com.hzs.shop.common.result.Result;
 import com.hzs.shop.common.service.FileService;
 import com.hzs.shop.common.vo.FileUploadVO;
-import com.hzs.shop.user.model.dto.LoginRequest;
-import com.hzs.shop.user.model.dto.PasswordUpdateDTO;
-import com.hzs.shop.user.model.dto.RegisterRequest;
-import com.hzs.shop.user.model.dto.UserUpdateDTO;
+import com.hzs.shop.user.model.dto.*;
 import com.hzs.shop.user.model.vo.UserVO;
 import com.hzs.shop.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +36,12 @@ public class UserController {
     public Result<String> register(@Valid @RequestBody RegisterRequest registerRequest) {
         userService.register(registerRequest);
         return Result.success("注册成功");
+    }
+    @Operation(summary = "管理员注册")
+    @PostMapping("/adminregister")
+    public Result<String> adminRegister(@Valid @RequestBody RegisterRequest registerRequest) {
+        userService.adminRegister(registerRequest);
+        return Result.success("管理员注册成功");
     }
     @Operation(summary = "用户登录")
     @PostMapping("/login")
@@ -71,5 +76,11 @@ public class UserController {
         FileUploadVO fileUploadVO = fileService.uploadImage(file, request);
         userService.updateAvatar(userId, fileUploadVO.getUrl());
         return Result.success(fileUploadVO.getUrl());
+    }
+    @Operation(summary = "用户列表（管理员）")
+    @AdminOnly
+    @PostMapping("/list")
+    public Result<PageResult<UserVO>> getUserList(@RequestBody UserQueryDTO dto) {
+        return Result.success(userService.getUserList(dto));
     }
 }

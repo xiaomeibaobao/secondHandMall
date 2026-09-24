@@ -1,11 +1,13 @@
 package com.hzs.shop.user.service.interceptor;
 
+import com.hzs.shop.common.annotation.AdminOnly;
 import com.hzs.shop.common.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
@@ -34,13 +36,28 @@ public class LoginInterceptor implements HandlerInterceptor {
         Long userId = jwtUtil.getUserId(token);
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
-
         request.setAttribute("userId", userId);
         request.setAttribute("username", username);
         request.setAttribute("role", role);
         log.debug("用户认证成功：{}（{}）", username, userId);
+//        if(handler instanceof HandlerMethod) {
+//            HandlerMethod handlerMethod = (HandlerMethod) handler;
+//            AdminOnly adminOnly = handlerMethod.getMethodAnnotation(AdminOnly.class);
+//            if(adminOnly != null) {
+//                if(!"ADMIN".equals(role)) {
+//                    return writeForbidden(response, "无权限访问");
+//                }
+//
+//            }
+//        }
         return true;
     }
+//    private boolean writeForbidden(HttpServletResponse response, String message) throws Exception {
+//        response.setStatus(403);
+//        response.setContentType("application/json;charset=utf-8");
+//        response.getWriter().write("{\"code\": 403, \"message\": \"" + message + "\"}");
+//        return false;
+//    }
 
     private boolean writeUnauthorized(HttpServletResponse response, String message) throws IOException {
         response.setStatus(401);
