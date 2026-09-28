@@ -83,4 +83,25 @@ public class UserController {
     public Result<PageResult<UserVO>> getUserList(@RequestBody UserQueryDTO dto) {
         return Result.success(userService.getUserList(dto));
     }
+    @Operation(summary = "用户状态修改（管理员）")
+    @AdminOnly
+    @PostMapping("/update/user/status")
+    public Result<String> uploadUserStatus(@RequestBody UserStatusDTO dto) {
+        userService.updateUserStatus(dto);
+        return Result.success("用户状态修改成功");
+    }
+    @Operation(summary = "删除用户（管理员）")
+    @AdminOnly
+    @PostMapping("/delete/{id}")
+    public Result<String> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return Result.success("用户删除成功");
+    }
+    @Operation(summary = "修改用户角色（管理员）")
+    @AdminOnly
+    @PostMapping("/update/user/role")
+    public Result<String> uploadUserRole(@RequestBody UserRoleDTO dto) {
+        userService.updateUserRole(dto);
+        return Result.success("用户角色更新成功");
+    }
 }

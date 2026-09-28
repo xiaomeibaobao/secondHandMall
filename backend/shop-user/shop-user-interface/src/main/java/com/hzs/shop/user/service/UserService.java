@@ -61,10 +61,8 @@ public interface UserService {
 
     /**
      * 修改用户状态（管理员）
-     * @param userId
-     * @param status
      */
-    void updateUserStatus(Long userId, Integer status);
+    void updateUserStatus(UserStatusDTO dto);
 
     /**
      * 删除用户（管理员）
@@ -74,8 +72,6 @@ public interface UserService {
 
     /**
      * 修改用户角色
-     * @param userId
-     * @param role
      */
-    void updateUserRole(Long userId, String role);
+    void updateUserRole(UserRoleDTO dto);
 }

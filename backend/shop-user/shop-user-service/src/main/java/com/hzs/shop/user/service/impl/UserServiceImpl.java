@@ -172,18 +172,38 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void updateUserStatus(Long userId, Integer status) {
-
+    @Transactional
+    public void updateUserStatus(UserStatusDTO dto) {
+        User user = baseMapper.selectById(dto.getId());
+        if(user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+        user.setStatus(dto.getStatus());
+        userMapper.updateById(user);
+        log.info("用户状态更新：{} -> {}", dto.getId(), dto.getStatus());
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
-
+        User user = userMapper.selectById(userId);
+        if(user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+        baseMapper.deleteById(userId);
+        log.info("用户删除成功：{}", userId);
     }
 
     @Override
-    public void updateUserRole(Long userId, String role) {
-
+    @Transactional
+    public void updateUserRole(UserRoleDTO dto) {
+        User user = userMapper.selectById(dto.getId());
+        if(user == null) {
+            throw new BusinessException(404, "用户不存在");
+        }
+        user.setRole(dto.getRole());
+        userMapper.updateById(user);
+        log.info("用户角色更新{} -> {}", dto.getId(), dto.getRole());
     }
 
     private UserVO getUserVO(User user) {
